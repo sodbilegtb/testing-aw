@@ -1,0 +1,14 @@
+aws_region             = "eu-central-1"            # Deploy resources in Frankfurt
+vpc_cidr               = "10.0.0.0/16"             # VPC IP range
+public_subnet_cidr_1a  = "10.0.1.0/24"             # Public subnet in AZ 1a
+public_subnet_cidr_1b  = "10.0.2.0/24"             # Public subnet in AZ 1b
+private_subnet_cidr_1a = "10.0.3.0/24"             # Private subnet in AZ 1a
+private_subnet_cidr_1b = "10.0.4.0/24"             # Private subnet in AZ 1b
+ami_id                 = "ami-0c02fb55956c7d316"   # Ubuntu AMI     
+instance_type          = "t2.micro"                # Free Tier EC2 instance
+db_instance_class      = "db.t3.micro"             # Free Tier RDS instance
+db_name                = "mydatabase_project"      # Database name
+db_username            = "sodbilegt_admin_project" # Database username
+db_password            = "Securepassword123"       # Database password
+ec2_instance_count     = 1                         # Number of EC2 instances
+bucket_name             = "terraform-sodbilegtba-remote-backend" #  bucket name
