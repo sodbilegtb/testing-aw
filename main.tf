@@ -52,8 +52,8 @@ module "rds" {
 }
 
 module "static_website" {
-  source       = "./modules/s3"
-  bucket_name  = var.bucket_name
-  common_tags  = local.common_tags
-  environment  = local.common_tags["Environment"]
+  source      = "./modules/s3"
+  bucket_name = var.bucket_name
+  common_tags = local.common_tags
+  environment = local.common_tags["Environment"]
 }
