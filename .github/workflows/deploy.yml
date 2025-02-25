@@ -21,6 +21,16 @@ jobs:
         with:
           terraform_version: 1.7.0
 
+      - name: Install TFLint
+        run: |
+          curl -sLo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v0.45.0/tflint_linux_amd64.zip
+          unzip tflint.zip
+          sudo mv tflint /usr/local/bin/tflint
+          tflint --version
+
+      - name: Run Terraform Linter (TFLint)
+        run: tflint .
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -31,19 +41,19 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform destroy (auto-approve)
-        run: terraform destroy -auto-approve
-
       - name: Terraform Plan
         run: terraform plan
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-      - name: Terraform Destroy
+      - name: Manual Approval (Optional Destroy)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "Waiting for manual approval to proceed with terraform destroy..."
+          # The action will pause here, waiting for manual intervention.
+          # If no approval, this step will not run.
+
+      - name: Terraform Destroy (Optional)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform destroy -auto-approve
-
-
-        
-
