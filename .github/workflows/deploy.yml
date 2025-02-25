@@ -4,54 +4,61 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-
-permissions:
-  id-token: write
-  contents: read
+  workflow_dispatch:  # Allow manual triggering from GitHub Actions UI
 
 jobs:
-  terraform:
-    name: Terraform Workflow
+  # Job for running Terraform Apply
+  apply:
+    name: Apply Infrastructure Changes
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.7.0
+          terraform_version: 1.7.5
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Terraform Format
-        run: terraform fmt -check
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+  # Job for destroying infrastructure
+  destroy:
+    name: Destroy Infrastructure
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'  # Only run destroy manually
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.5
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
-        continue-on-error: true
 
-      - name: Save Terraform Plan as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraform-plan
-          path: tfplan
-
-      - name: Terraform Apply (Manual Approval)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve
+        
