@@ -44,3 +44,17 @@ data "aws_iam_policy_document" "static_website" {
     ]
   }
 }
+
+resource "aws_s3_object" "index_html" {
+  bucket       = aws_s3_bucket.static_website.bucket
+  key          = "index.html"
+  source       = "${path.module}/../../src/index.html"  # Adjusted path
+  content_type = "text/html"
+}
+
+resource "aws_s3_object" "error_html" {
+  bucket       = aws_s3_bucket.static_website.bucket
+  key          = "error.html"
+  source       = "${path.module}/../../src/error.html"  # Adjusted path
+  content_type = "text/html"
+}
