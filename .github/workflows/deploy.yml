@@ -44,19 +44,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-
-      - name: Delete Network Interfaces (before destroy)
-        run: |
-          # List all network interfaces in the VPC (replace with your actual VPC IDs)
-          interfaces=$(aws ec2 describe-network-interfaces --filters "Name=vpc-id,Values=$VPC_ID" --query 'NetworkInterfaces[*].NetworkInterfaceId' --output text)
-          
-          # Loop through and delete each network interface
-          for iface in $interfaces; do
-            aws ec2 delete-network-interface --network-interface-id $iface
-          done
-
       - name: Terraform Destroy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform destroy -auto-approve
