@@ -70,9 +70,7 @@ variable "db_password" {
   type        = string
   sensitive   = true # Marks this variable as sensitive
 }
-variable "ec2_instance_count" {
-  type = number
-}
+
 
 variable "bucket_name" {
   description = "Name of the S3 bucket for static website"

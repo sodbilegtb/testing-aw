@@ -10,5 +10,4 @@ db_instance_class      = "db.t3.micro"                          # Free Tier RDS 
 db_name                = "mydatabase_project"                   # Database name
 db_username            = "sodbilegt_admin_project"              # Database username
 db_password            = "Securepassword123"                    # Database password
-ec2_instance_count     = 1                                      # Number of EC2 instances
 bucket_name            = "terraform-sodbilegtba-remote-backend" #  bucket name
