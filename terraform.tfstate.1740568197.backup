@@ -1,0 +1,22 @@
+{
+  "version": 4,
+  "terraform_version": "1.10.1",
+  "serial": 512,
+  "lineage": "d5ad6c85-6a47-ac6a-d0d2-c96860010a06",
+  "outputs": {},
+  "resources": [],
+  "check_results": [
+    {
+      "object_kind": "var",
+      "config_addr": "module.rds.var.db_password",
+      "status": "unknown",
+      "objects": null
+    },
+    {
+      "object_kind": "var",
+      "config_addr": "module.compute.var.instance_type",
+      "status": "unknown",
+      "objects": null
+    }
+  ]
+}

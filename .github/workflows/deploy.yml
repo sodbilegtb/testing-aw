@@ -47,13 +47,16 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-      - name: Manual Approval (Optional Destroy)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Delete Network Interfaces (before destroy)
         run: |
-          echo "Waiting for manual approval to proceed with terraform destroy..."
-          # The action will pause here, waiting for manual intervention.
-          # If no approval, this step will not run.
+          # List all network interfaces in the VPC (replace with your actual VPC IDs)
+          interfaces=$(aws ec2 describe-network-interfaces --filters "Name=vpc-id,Values=$VPC_ID" --query 'NetworkInterfaces[*].NetworkInterfaceId' --output text)
+          
+          # Loop through and delete each network interface
+          for iface in $interfaces; do
+            aws ec2 delete-network-interface --network-interface-id $iface
+          done
 
-      - name: Terraform Destroy (Optional)
+      - name: Terraform Destroy
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform destroy -auto-approve
